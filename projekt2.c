@@ -214,7 +214,7 @@ int z(int velkost, ZVIERATKA *head){//fine, but treba to aj zapisat (samotna fun
     char meno[MAX];
     scanf("%s", meno);
 
-    while(strcmp(tmp->meno, meno) != 0 && tmp_pred->next != NULL){
+    while(strcmp(tmp->meno, meno) != 0 && tmp->next != NULL){
         tmp_pred = tmp;
         tmp = tmp->next;
     }
@@ -227,9 +227,56 @@ int z(int velkost, ZVIERATKA *head){//fine, but treba to aj zapisat (samotna fun
     return velkost;
 }
 
-void h(ZVIERATKA *head){
+void h(ZVIERATKA *head){//ready
 
-    
+    ZVIERATKA *tmp = head;
+    int datum;
+    scanf("%d", &datum);
+
+    int i = 1;
+    int boli_nakrmene = 0;
+    while(tmp->next != NULL){
+        if(tmp->datum_krmenia < datum){
+            printf("%d.\n", i);
+            printf("Meno: %s\nDruh: %s\nVyska: %d\nVaha: %.2lf\nDatum narodenia: %d\nDatum krmenia: %d\nMeno osetrovatela: %s\n", tmp->meno, tmp->druh, tmp->vyska, tmp->vaha, tmp->datum_narodenia, tmp->datum_krmenia, tmp->meno_osetrovatela);
+            boli_nakrmene = 1;
+            i++;
+        }
+        tmp = tmp->next;
+    }
+    if(boli_nakrmene == 0){
+        printf("Vsetky zvierata boli k datumu %d nakrmene", datum);
+    }
+}
+
+void a(ZVIERATKA **head){//ready
+
+    ZVIERATKA *tmp = *head;
+    char meno[MAX];
+    int datum;
+    scanf("%s", meno);
+    scanf("%d", &datum);
+
+    while(strcmp(tmp->meno, meno) != 0 && tmp->next != NULL){
+        tmp = tmp->next;
+    }
+    if(strcmp(tmp->meno, meno) == 0){
+        tmp->datum_krmenia = datum;
+        printf("Zviera s menom %s bolo naposledy nakrmene dna %d\n", tmp->meno, datum);
+    }else{
+        printf("Zviera nebolo najdene\n");
+    }
+
+}
+
+void k(ZVIERATKA **head){
+    ZVIERATKA *tmp = *head;
+    while(*head != NULL){
+        tmp = *head;
+        *head = (*head)->next;
+        printf("Zviera s menom %s bolo uvolnene\n", tmp->meno);
+        free(tmp);
+    }
 }
 
 int main(void){
@@ -241,8 +288,10 @@ int main(void){
 
     int velkost = n(&head, &tail);
     //velkost = p(head, &tail, velkost);
-    velkost = z(velkost, head);
-    v(velkost, head);
+    //velkost = z(velkost, head);
+    //a(&head);
+    //v(velkost, head);
+    k(&head);
 
 
     return 0;

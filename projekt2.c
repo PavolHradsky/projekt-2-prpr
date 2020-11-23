@@ -12,6 +12,7 @@
 
 #define MAX 50
 
+//funkcie na pracu so spajanymi zoznamami
 typedef struct zvieratka {
    char meno[MAX];
    char druh[MAX];
@@ -165,7 +166,7 @@ void v(int velkost, ZVIERATKA *head){
     }
 }
 
-int p(ZVIERATKA *head, int velkost){//fine, but treba to aj zapisat (samotna funkcia?)
+int p(ZVIERATKA *head, ZVIERATKA **tail, int velkost){//fine, but treba to aj zapisat (samotna funkcia?)
 
     ZVIERATKA *tmp_pred = head;
     int miesto;
@@ -188,16 +189,47 @@ int p(ZVIERATKA *head, int velkost){//fine, but treba to aj zapisat (samotna fun
 
     ZVIERATKA *tmp = novy_zaznam(meno, druh, vyska, vaha, datum_narodenia, datum_krmenia, meno_osetrovatela);
 
-    for(int i = 1; i < miesto-1; i++){
-        tmp_pred = tmp_pred->next;
+    if (miesto <= velkost){
+        for(int i = 1; i < miesto-1; i++){
+            tmp_pred = tmp_pred->next;
+        }
+
+        tmp->next = tmp_pred->next;
+        tmp_pred->next = tmp;
+    }else{
+        vloz_na_koniec(tail, tmp);
     }
 
-    tmp->next = tmp_pred->next;
-    tmp_pred->next = tmp;
+
 
     velkost++;
     return velkost;
 
+}
+
+int z(int velkost, ZVIERATKA *head){//fine, but treba to aj zapisat (samotna funkcia?)
+
+    ZVIERATKA *tmp = head;
+    ZVIERATKA *tmp_pred = head;
+    char meno[MAX];
+    scanf("%s", meno);
+
+    while(strcmp(tmp->meno, meno) != 0 && tmp_pred->next != NULL){
+        tmp_pred = tmp;
+        tmp = tmp->next;
+    }
+
+
+    tmp_pred->next = tmp->next;
+    free(tmp);
+    printf("Zviera s menom %s bolo vymazane.\n", meno);
+    velkost--;
+    return velkost;
+}
+
+void h(ZVIERATKA *head){
+
+    
 }
 
 int main(void){
@@ -208,7 +240,8 @@ int main(void){
     //ZVIERATKA *tmp;
 
     int velkost = n(&head, &tail);
-    velkost = p(head, velkost);
+    //velkost = p(head, &tail, velkost);
+    velkost = z(velkost, head);
     v(velkost, head);
 
 

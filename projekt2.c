@@ -208,13 +208,19 @@ int p(ZVIERATKA *head, ZVIERATKA **tail, int velkost){//ready
     char meno_osetrovatela[MAX];
 
     scanf("%d", &miesto);
-    scanf("%s", meno);
-    scanf("%s", druh);
+    getchar();
+    fgets(meno, MAX, stdin);
+    meno[strlen(meno)-1] = 0;
+    //getchar();
+    fgets(druh, MAX, stdin);
+    druh[strlen(druh)-1] = 0;
     scanf("%d", &vyska);
     scanf("%lf", &vaha);
     scanf("%d", &datum_narodenia);
     scanf("%d", &datum_krmenia);
-    scanf("%s", meno_osetrovatela);
+    getchar();
+    fgets(meno_osetrovatela, MAX, stdin);
+    meno_osetrovatela[strlen(meno_osetrovatela)-1] = 0;
 
     ZVIERATKA *tmp = novy_zaznam(meno, druh, vyska, vaha, datum_narodenia, datum_krmenia, meno_osetrovatela);
 
@@ -247,11 +253,11 @@ int z(int velkost, ZVIERATKA *head){//ready
     ZVIERATKA *tmp = head;
     ZVIERATKA *tmp_pred = head;
     char meno[MAX];
-    //getchar();
+    getchar();
     fgets(meno, MAX, stdin);
-    //printf("%s--", meno);
-    //getchar();
-    scanf("%s", meno);
+    meno[strlen(meno)-1] = 0;
+    
+    //scanf("%s", meno);
 
     while(strcmp(tmp->meno, meno) != 0 && tmp->next != NULL){
         tmp_pred = tmp;
@@ -322,7 +328,7 @@ int a(int velkost, ZVIERATKA **head){//ready
     }else{
         printf("Zviera nebolo najdene\n");
     }
-
+    return 0;
 }
 
 int k(int velkost, ZVIERATKA **head){//ready

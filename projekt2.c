@@ -67,9 +67,26 @@ void vypis_zoznam(ZVIERATKA *head){
     }
 }
 
+void aktualizuj_subor(ZVIERATKA *head){
+    ZVIERATKA *tmp = head;
+    FILE *fw;
+    fw = fopen("zvierata.txt", "w");
+    while(tmp != NULL){
+        fprintf(fw, "$$$\n");
+        fprintf(fw, "%s\n", tmp->meno);
+        fprintf(fw, "%s\n", tmp->druh);
+        fprintf(fw, "%d\n", tmp->vyska);
+        fprintf(fw, "%.5lf\n", tmp->vaha);
+        fprintf(fw, "%d\n", tmp->datum_narodenia);
+        fprintf(fw, "%d\n", tmp->datum_krmenia);
+        fprintf(fw, "%s\n", tmp->meno_osetrovatela);
+        tmp = tmp->next;
+    }
+    fclose(fw);
+}
 
 
-int n(ZVIERATKA **head, ZVIERATKA **tail){
+int n(ZVIERATKA **head, ZVIERATKA **tail){//ready
     ZVIERATKA *tmp;
     FILE *fr;
 
@@ -154,19 +171,31 @@ int n(ZVIERATKA **head, ZVIERATKA **tail){
 
     }
     printf("Nacitalo sa %d zaznamov\n", velkost);
+    fclose(fr);
     return velkost;
 }
 
-void v(int velkost, ZVIERATKA *head){
+int v(int velkost, ZVIERATKA *head){//ready
+
+    if(velkost == -1){
+        printf("Subor este nebol otvoreny\n");
+        return -1;
+    }
     ZVIERATKA *tmp = head;
     for(int i = 1; i <= velkost; i++){
         printf("%d.\n", i);
         printf("Meno: %s\nDruh: %s\nVyska: %d\nVaha: %.2lf\nDatum narodenia: %d\nDatum krmenia: %d\nMeno osetrovatela: %s\n", tmp->meno, tmp->druh, tmp->vyska, tmp->vaha, tmp->datum_narodenia, tmp->datum_krmenia, tmp->meno_osetrovatela);
         tmp = tmp->next;
     }
+    return 0;
 }
 
-int p(ZVIERATKA *head, ZVIERATKA **tail, int velkost){//fine, but treba to aj zapisat (samotna funkcia?)
+int p(ZVIERATKA *head, ZVIERATKA **tail, int velkost){//ready
+
+    if(velkost == -1){
+        printf("Subor este nebol otvoreny\n");
+        return -1;
+    }
 
     ZVIERATKA *tmp_pred = head;
     int miesto;
@@ -196,6 +225,7 @@ int p(ZVIERATKA *head, ZVIERATKA **tail, int velkost){//fine, but treba to aj za
 
         tmp->next = tmp_pred->next;
         tmp_pred->next = tmp;
+        aktualizuj_subor(head);
     }else{
         vloz_na_koniec(tail, tmp);
     }
@@ -207,27 +237,46 @@ int p(ZVIERATKA *head, ZVIERATKA **tail, int velkost){//fine, but treba to aj za
 
 }
 
-int z(int velkost, ZVIERATKA *head){//fine, but treba to aj zapisat (samotna funkcia?)
+int z(int velkost, ZVIERATKA *head){//ready
+
+    if(velkost == -1){
+        printf("Subor este nebol otvoreny\n");
+        return -1;
+    }
 
     ZVIERATKA *tmp = head;
     ZVIERATKA *tmp_pred = head;
     char meno[MAX];
+    //getchar();
+    fgets(meno, MAX, stdin);
+    //printf("%s--", meno);
+    //getchar();
     scanf("%s", meno);
 
     while(strcmp(tmp->meno, meno) != 0 && tmp->next != NULL){
         tmp_pred = tmp;
         tmp = tmp->next;
     }
-
-
-    tmp_pred->next = tmp->next;
-    free(tmp);
-    printf("Zviera s menom %s bolo vymazane.\n", meno);
-    velkost--;
+    if(strcmp(tmp->meno, meno) == 0){
+        tmp_pred->next = tmp->next;
+        free(tmp);
+        printf("Zviera s menom %s bolo vymazane.\n", meno);
+        velkost--;
+        aktualizuj_subor(head);
+    }else{
+        printf("Zviera nebolo najdene\n");
+    }
     return velkost;
+
+    
 }
 
-void h(ZVIERATKA *head){//ready
+int h(int velkost, ZVIERATKA *head){//ready
+
+    if(velkost == -1){
+        printf("Subor este nebol otvoreny\n");
+        return -1;
+    }
 
     ZVIERATKA *tmp = head;
     int datum;
@@ -247,9 +296,15 @@ void h(ZVIERATKA *head){//ready
     if(boli_nakrmene == 0){
         printf("Vsetky zvierata boli k datumu %d nakrmene", datum);
     }
+    return 0;
 }
 
-void a(ZVIERATKA **head){//ready
+int a(int velkost, ZVIERATKA **head){//ready
+
+    if(velkost == -1){
+        printf("Subor este nebol otvoreny\n");
+        return -1;
+    }
 
     ZVIERATKA *tmp = *head;
     char meno[MAX];
@@ -263,20 +318,28 @@ void a(ZVIERATKA **head){//ready
     if(strcmp(tmp->meno, meno) == 0){
         tmp->datum_krmenia = datum;
         printf("Zviera s menom %s bolo naposledy nakrmene dna %d\n", tmp->meno, datum);
+        aktualizuj_subor(*head);
     }else{
         printf("Zviera nebolo najdene\n");
     }
 
 }
 
-void k(ZVIERATKA **head){
+int k(int velkost, ZVIERATKA **head){//ready
+
+    if(velkost == -1){
+        printf("Subor este nebol otvoreny\n");
+        return -1;
+    }
+
     ZVIERATKA *tmp = *head;
     while(*head != NULL){
         tmp = *head;
         *head = (*head)->next;
-        printf("Zviera s menom %s bolo uvolnene\n", tmp->meno);
+        //printf("Zviera s menom %s bolo uvolnene\n", tmp->meno);
         free(tmp);
     }
+    return 0;
 }
 
 int main(void){
@@ -284,14 +347,35 @@ int main(void){
     ZVIERATKA *head = NULL;
     ZVIERATKA *tail = NULL;
 
-    //ZVIERATKA *tmp;
+    char funkcia;
+    int velkost = -1;
 
-    int velkost = n(&head, &tail);
-    //velkost = p(head, &tail, velkost);
-    //velkost = z(velkost, head);
-    //a(&head);
-    //v(velkost, head);
-    k(&head);
+    while(1){
+        scanf("%c", &funkcia);
+        if(funkcia == 'n'){
+            velkost = n(&head, &tail);
+        }
+        if(funkcia == 'v'){
+            v(velkost, head);
+        }
+        if(funkcia == 'p'){
+            velkost = p(head, &tail, velkost);
+        }
+        if(funkcia == 'z'){
+            velkost = z(velkost, head);
+        }
+        if(funkcia == 'h'){
+            velkost = h(velkost, head);
+        }
+        if(funkcia == 'a'){
+            a(velkost, &head);
+        }
+        if(funkcia == 'k'){
+            k(velkost, &head);
+            return 0;
+        }
+    }
+
 
 
     return 0;

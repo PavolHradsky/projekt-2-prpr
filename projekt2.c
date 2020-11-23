@@ -165,7 +165,7 @@ void v(int velkost, ZVIERATKA *head){
     }
 }
 
-void p(ZVIERATKA *head){//nefunguje?
+int p(ZVIERATKA *head, int velkost){//fine, but treba to aj zapisat (samotna funkcia?)
 
     ZVIERATKA *tmp_pred = head;
     int miesto;
@@ -188,12 +188,15 @@ void p(ZVIERATKA *head){//nefunguje?
 
     ZVIERATKA *tmp = novy_zaznam(meno, druh, vyska, vaha, datum_narodenia, datum_krmenia, meno_osetrovatela);
 
-    for(int i = 0; i < miesto; i++){
+    for(int i = 1; i < miesto-1; i++){
         tmp_pred = tmp_pred->next;
     }
 
     tmp->next = tmp_pred->next;
     tmp_pred->next = tmp;
+
+    velkost++;
+    return velkost;
 
 }
 
@@ -205,7 +208,7 @@ int main(void){
     //ZVIERATKA *tmp;
 
     int velkost = n(&head, &tail);
-
+    velkost = p(head, velkost);
     v(velkost, head);
 
 

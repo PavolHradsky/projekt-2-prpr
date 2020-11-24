@@ -315,7 +315,9 @@ int a(int velkost, ZVIERATKA **head){//ready
     ZVIERATKA *tmp = *head;
     char meno[MAX];
     int datum;
-    scanf("%s", meno);
+    getchar();
+    fgets(meno, MAX, stdin);
+    meno[strlen(meno)-1] = 0;
     scanf("%d", &datum);
 
     while(strcmp(tmp->meno, meno) != 0 && tmp->next != NULL){

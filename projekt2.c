@@ -10,7 +10,7 @@
 #include<stdlib.h>
 #include<string.h>
 
-#define MAX 50
+#define MAX 100
 
 //funkcie na pracu so spajanymi zoznamami
 typedef struct zvieratka {
@@ -85,7 +85,7 @@ void aktualizuj_subor(ZVIERATKA *head){
     fclose(fw);
 }
 
-
+//funkcie 
 int n(ZVIERATKA **head, ZVIERATKA **tail){//ready
     ZVIERATKA *tmp;
     FILE *fr;
@@ -140,20 +140,37 @@ int n(ZVIERATKA **head, ZVIERATKA **tail){//ready
             }
             break;
         case 1:
+            if(strlen(tmp_str)>50){
+                printf("Nespravne zadanz udaj: meno\n");
+                return -1;
+            }
             tmp_str[strlen(tmp_str)-1] = 0;
             strcpy(tmp_meno, tmp_str);
             break;
         case 2:
+            if(strlen(tmp_str)>30){
+                printf("Nespravne zadany udaj: druh\n");
+                return -1;
+            }
             tmp_str[strlen(tmp_str)-1] = 0;
             strcpy(tmp_druh, tmp_str);
             break;
         case 3:
+            if(atoi(tmp_str)<0 || atoi(tmp_str)>30000){
+                printf("Nespravne zadany udaj: vyska\n");
+                return -1;
+            }
             tmp_vyska = atoi(tmp_str);
             break;
         case 4:
+            if(atof(tmp_str)<0 || atof(tmp_str)>3000000){
+                printf("Nespravne zadany udaj: vaha\n");
+                return -1;
+            }
             tmp_vaha = atof(tmp_str);
             break;
         case 5:
+
             tmp_datum_narodenia = atoi(tmp_str);
             break;
         case 6:
@@ -162,6 +179,10 @@ int n(ZVIERATKA **head, ZVIERATKA **tail){//ready
         case 7:
             if(i != pocet){
                 tmp_str[strlen(tmp_str)-1] = 0;
+            }
+            if(strlen(tmp_str)>50){
+                printf("Nespravne zadanz udaj: meno osetrovatela\n");
+                return -1;
             }
             strcpy(tmp_meno_osetrovatela, tmp_str);
             break;
@@ -221,6 +242,27 @@ int p(ZVIERATKA *head, ZVIERATKA **tail, int velkost){//ready
     getchar();
     fgets(meno_osetrovatela, MAX, stdin);
     meno_osetrovatela[strlen(meno_osetrovatela)-1] = 0;
+
+    if(strlen(meno)>50){
+        printf("Nespravne zadany udaj: meno\n");
+        return -1;
+    }
+    if(strlen(druh)>30){
+        printf("Nespravne zadany udaj: druh\n");
+        return -1;
+    }
+    if(vyska<0 || vyska>30000){
+        printf("Nespravne zadany udaj: vyska\n");
+        return -1;
+    }
+    if(vaha<0 || vaha>3000000){
+        printf("Nespravne zadany udaj: vaha\n");
+        return -1;
+    }
+    if(strlen(meno_osetrovatela)>50){
+        printf("Nespravne zadany udaj: meno osetrovatela\n");
+        return -1;
+    }
 
     ZVIERATKA *tmp = novy_zaznam(meno, druh, vyska, vaha, datum_narodenia, datum_krmenia, meno_osetrovatela);
 
@@ -300,9 +342,9 @@ int h(int velkost, ZVIERATKA *head){//ready
         tmp = tmp->next;
     }
     if(boli_nakrmene == 0){
-        printf("Vsetky zvierata boli k datumu %d nakrmene", datum);
+        printf("Vsetky zvierata boli k datumu %d nakrmene\n", datum);
     }
-    return 0;
+    return velkost;
 }
 
 int a(int velkost, ZVIERATKA **head){//ready
@@ -362,6 +404,10 @@ int main(void){
         scanf("%c", &funkcia);
         if(funkcia == 'n'){
             velkost = n(&head, &tail);
+            if(velkost == -1){
+                printf("Chyba v udajoch\n");
+                return velkost;
+            }
         }
         if(funkcia == 'v'){
             v(velkost, head);
